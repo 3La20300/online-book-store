@@ -1,0 +1,44 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: bookstore-backend
+
+  # PostgreSQL Database Configuration (matching Docker container)
+  datasource:
+    url: jdbc:postgresql://localhost:5433/bookstore_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  # JPA & Hibernate Settings
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+
+# Custom Application Properties
+app:
+  # JWT Security Configuration (HS256 requires at least 256 bits / 32 bytes secret)
+  jwt:
+    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    expiration-ms: 86400000 # 24 hours (in milliseconds)
+
+  # CORS Configuration for Angular frontend
+  cors:
+    allowed-origins:
+      "http://localhost:4200"
+
+# Swagger / OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method

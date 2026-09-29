@@ -111,7 +111,7 @@ Start the containerized PostgreSQL service:
 ```bash
 docker compose up -d
 ```
-Verify that the container is running and healthy on port `5432`.
+Verify that the container is running and healthy on host port `5433` (mapped to PostgreSQL's container port `5432`).
 
 ### Step 3: Launch the Backend Service
 Navigate to the `backend` directory and start the Spring Boot application:
@@ -124,6 +124,8 @@ cd backend
 The backend server starts on `http://localhost:8082`.
 - Swagger UI Documentation: `http://localhost:8082/swagger-ui.html`
 - OpenAPI Specification: `http://localhost:8082/v3/api-docs`
+- On first startup, the application seeds eight sample books and a default administrator if their records do not already exist.
+- Default administrator: `admin@bookstore.com` / `Admin123!`. Change this password before exposing the application; override it with `APP_SEED_ADMIN_PASSWORD` (and optionally `APP_SEED_ADMIN_EMAIL` and `APP_SEED_ADMIN_PHONE`) in the backend environment.
 
 ### Step 4: Launch the Frontend Application
 In a separate terminal, navigate to the `frontend` directory:
@@ -160,6 +162,8 @@ The Angular development server will start on `http://localhost:4200`.
 | `POST` | `/api/books` | ADMIN | Adds a new book to inventory. |
 | `PUT` | `/api/books/{id}` | ADMIN | Updates an existing book record. |
 | `DELETE` | `/api/books/{id}` | ADMIN | Deletes a book record from the inventory. |
+
+Book requests use `title`, `author`, `category`, and a positive `price`; `description` and `imageUrl` are optional. The storefront catalog and individual book pages are available at `/home` and `/books/{id}`.
 
 ---
 

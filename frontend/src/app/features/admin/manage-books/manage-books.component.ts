@@ -1,132 +1,39 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Book, BookRequest } from '../../../core/models/book.model';
-import { BookService } from '../../../core/services/book.service';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-manage-books',
   standalone: true,
-  imports: [CurrencyPipe, ReactiveFormsModule],
-  templateUrl: './manage-books.component.html',
-  styleUrl: './manage-books.component.scss'
-})
-export class ManageBooksComponent implements OnInit {
-  private readonly bookService = inject(BookService);
-  private readonly fb = inject(FormBuilder);
-
-  readonly books = signal<Book[]>([]);
-  readonly loading = signal(false);
-  readonly submitting = signal(false);
-  readonly deletingId = signal<number | null>(null);
-  readonly modalOpen = signal(false);
-  readonly editingBook = signal<Book | null>(null);
-  readonly errorMessage = signal<string | null>(null);
-  readonly successMessage = signal<string | null>(null);
-
-  readonly bookForm = this.fb.nonNullable.group({
-    title: ['', [Validators.required, Validators.maxLength(200)]],
-    author: ['', [Validators.required, Validators.maxLength(160)]],
-    category: ['', [Validators.required, Validators.maxLength(100)]],
-    price: [0, [Validators.required, Validators.min(0.01)]],
-    description: [''],
-    imageUrl: ['', [Validators.maxLength(2048), Validators.pattern(/^$|^https?:\/\/.+/i)]]
-  });
-
-  ngOnInit(): void {
-    this.loadBooks();
-  }
-
-  loadBooks(): void {
-    this.loading.set(true);
-    this.errorMessage.set(null);
-    this.bookService.getBooks().subscribe({
-      next: books => {
-        this.books.set(books);
-        this.loading.set(false);
-      },
-      error: error => {
-        this.errorMessage.set(error.error?.message || 'Failed to load books.');
-        this.loading.set(false);
-      }
-    });
-  }
-
-  openCreateModal(): void {
-    this.editingBook.set(null);
-    this.bookForm.reset({ title: '', author: '', category: '', price: 0, description: '', imageUrl: '' });
-    this.errorMessage.set(null);
-    this.modalOpen.set(true);
-  }
-
-  openEditModal(book: Book): void {
-    this.editingBook.set(book);
-    this.bookForm.reset({
-      title: book.title,
-      author: book.author,
-      category: book.category,
-      price: book.price,
-      description: book.description ?? '',
-      imageUrl: book.imageUrl ?? ''
-    });
-    this.errorMessage.set(null);
-    this.modalOpen.set(true);
-  }
-
-  closeModal(): void {
-    if (this.submitting()) return;
-    this.modalOpen.set(false);
-    this.editingBook.set(null);
-  }
-
-  saveBook(): void {
-    if (this.bookForm.invalid) {
-      this.bookForm.markAllAsTouched();
-      return;
+  imports: [CommonModule],
+  template: `
+    <div class="page-container">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Manage Books Inventory</h1>
+          <p class="page-subtitle">Central dashboard for administrators to perform CRUD operations on books</p>
+        </div>
+      </div>
+      <div class="placeholder-card">
+        <h3>📚 Book Inventory Management</h3>
+        <p>This module is reserved for Person 2 (Book CRUD, Table, Add/Edit Modals).</p>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .page-container { max-width: 1100px; margin: 0 auto; }
+    .page-header { margin-bottom: 2rem; }
+    .page-title { font-size: 1.85rem; font-weight: 800; color: var(--text-main); }
+    .page-subtitle { font-size: 0.95rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .placeholder-card {
+      background: white;
+      padding: 3rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      text-align: center;
+      box-shadow: var(--shadow-sm);
     }
-
-    const payload: BookRequest = this.bookForm.getRawValue();
-    const book = this.editingBook();
-    this.submitting.set(true);
-    this.errorMessage.set(null);
-    const request = book
-      ? this.bookService.updateBook(book.id, payload)
-      : this.bookService.createBook(payload);
-
-    request.subscribe({
-      next: savedBook => {
-        this.submitting.set(false);
-        this.modalOpen.set(false);
-        this.editingBook.set(null);
-        this.successMessage.set(book ? 'Book updated successfully.' : 'Book added successfully.');
-        if (book) {
-          this.books.update(items => items.map(item => item.id === savedBook.id ? savedBook : item));
-        } else {
-          this.books.update(items => [...items, savedBook]);
-        }
-      },
-      error: error => {
-        this.submitting.set(false);
-        this.errorMessage.set(error.error?.message || 'Unable to save the book.');
-      }
-    });
-  }
-
-  deleteBook(book: Book): void {
-    if (!confirm(`Delete "${book.title}" from the catalog? This cannot be undone.`)) return;
-
-    this.deletingId.set(book.id);
-    this.errorMessage.set(null);
-    this.bookService.deleteBook(book.id).subscribe({
-      next: () => {
-        this.deletingId.set(null);
-        this.books.update(items => items.filter(item => item.id !== book.id));
-        this.successMessage.set(`"${book.title}" was deleted.`);
-      },
-      error: error => {
-        this.deletingId.set(null);
-        this.errorMessage.set(error.error?.message || 'Unable to delete the book.');
-      }
-    });
-  }
-}
+    .placeholder-card h3 { margin-bottom: 0.5rem; }
+    .placeholder-card p { color: var(--text-muted); }
+  `]
+})
+export class ManageBooksComponent {}

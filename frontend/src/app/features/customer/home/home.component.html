@@ -1,0 +1,44 @@
+<div class="customer-layout">
+  <!-- Top Navigation Bar (Section 5 of Specs) -->
+  <header class="navbar">
+    <div class="container navbar-content">
+      <div class="brand">
+        <span class="brand-icon">📚</span>
+        <span class="brand-name">BOOK STORE</span>
+      </div>
+
+      <div class="user-actions">
+        <span class="welcome-text">
+          Welcome, <strong>{{ authService.currentUser()?.email }}</strong>
+        </span>
+        <button type="button" (click)="onLogout()" class="btn btn-outline btn-sm">
+          Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Welcome Section / Hero Banner (Section 5 of Specs) -->
+  <section class="hero-section">
+    <div class="container hero-content">
+      <h1>Discover Your Next Great Read</h1>
+      <p>Explore thousands of books across technology, fiction, science, history, and more.</p>
+      <a href="#catalog" class="btn btn-primary btn-lg">Explore Books ↓</a>
+    </div>
+  </section>
+
+  <!-- Book Display Catalog Grid Area -->
+  <main id="catalog" class="container catalog-section">
+    <div class="section-header">
+      <h2>Featured Books</h2>
+      <p>Browse our hand-picked selection of popular titles</p>
+    </div>
+
+    <div class="placeholder-box">
+      <div class="box-icon">📖</div>
+      <h3>Catalog Connected</h3>
+      <p>You are logged in as customer: <strong>{{ authService.currentUser()?.email }}</strong></p>
+      <span class="badge badge-user">Role: {{ authService.currentUser()?.role }}</span>
+    </div>
+  </main>
+</div>

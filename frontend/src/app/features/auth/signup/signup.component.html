@@ -1,13 +1,17 @@
-<div class="auth-container">
+<div class="auth-page">
   <div class="auth-card">
     <div class="auth-header">
-      <div class="logo-badge">📚 BOOK STORE</div>
-      <h2>Create an Account</h2>
-      <p>Sign up to explore our vast collection of books</p>
+      <a class="brand" routerLink="/home" aria-label="Book Store home">
+        <span class="brand-mark">B</span>
+        <span class="brand-name">BOOK<span class="brand-light">STORE</span></span>
+      </a>
+      <span class="eyebrow">NEW READER</span>
+      <h2>Create your account</h2>
+      <p>Join our book community and start exploring our collection</p>
     </div>
 
     @if (errorMessage()) {
-      <div class="alert alert-danger">
+      <div class="alert alert-danger" role="alert">
         {{ errorMessage() }}
       </div>
     }
@@ -15,7 +19,7 @@
     <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
       <!-- Email Field -->
       <div class="form-group">
-        <label for="email">Email Address</label>
+        <label for="email">Email address</label>
         <input
           id="email"
           type="email"
@@ -26,10 +30,10 @@
         @if (signupForm.get('email')?.invalid && signupForm.get('email')?.touched) {
           <div class="error-text">
             @if (signupForm.get('email')?.hasError('required')) {
-              <span>Email is required</span>
+              <span>Email is required.</span>
             }
             @if (signupForm.get('email')?.hasError('email')) {
-              <span>Please enter a valid email address</span>
+              <span>Please enter a valid email address.</span>
             }
           </div>
         }
@@ -48,10 +52,10 @@
         @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
           <div class="error-text">
             @if (signupForm.get('password')?.hasError('required')) {
-              <span>Password is required</span>
+              <span>Password is required.</span>
             }
             @if (signupForm.get('password')?.hasError('minlength')) {
-              <span>Password must be at least 6 characters</span>
+              <span>Password must be at least 6 characters.</span>
             }
           </div>
         }
@@ -59,7 +63,7 @@
 
       <!-- Confirm Password Field -->
       <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
+        <label for="confirmPassword">Confirm password</label>
         <input
           id="confirmPassword"
           type="password"
@@ -70,10 +74,10 @@
         @if (signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched) {
           <div class="error-text">
             @if (signupForm.get('confirmPassword')?.hasError('required')) {
-              <span>Please confirm your password</span>
+              <span>Please confirm your password.</span>
             }
             @if (signupForm.get('confirmPassword')?.hasError('passwordMismatch')) {
-              <span>Passwords do not match</span>
+              <span>Passwords do not match.</span>
             }
           </div>
         }
@@ -81,17 +85,17 @@
 
       <!-- Phone Number Field -->
       <div class="form-group">
-        <label for="phone">Phone Number</label>
+        <label for="phone">Phone number</label>
         <input
           id="phone"
           type="tel"
           formControlName="phone"
-          placeholder="+1234567890"
+          placeholder="+1 234 567 890"
           [class.is-invalid]="signupForm.get('phone')?.invalid && signupForm.get('phone')?.touched"
         />
         @if (signupForm.get('phone')?.invalid && signupForm.get('phone')?.touched) {
           <div class="error-text">
-            <span>Please enter a valid phone number</span>
+            <span>Please enter a valid phone number.</span>
           </div>
         }
       </div>
@@ -101,7 +105,7 @@
         @if (loading()) {
           <span>Creating account...</span>
         } @else {
-          <span>Sign Up</span>
+          <span>Create Account</span>
         }
       </button>
     </form>

@@ -1,30 +1,31 @@
 /* ===================================================
-   🎨 CSS Variables & Color System
+   🎨 CSS Variables & Color System (Book Store Warm Theme)
    =================================================== */
 :root {
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --primary-light: #eef2ff;
+  --primary: #a65e3b;
+  --primary-hover: #884829;
+  --primary-light: #fbeee7;
   
-  --secondary: #0f172a;
-  --accent: #f59e0b;
-  --danger: #ef4444;
-  --success: #10b981;
+  --secondary: #28241f;
+  --accent: #d7a875;
+  --danger: #dc2626;
+  --success: #16a34a;
   
-  --bg-main: #f8fafc;
+  --bg-main: #fbfaf7;
   --bg-card: #ffffff;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
+  --text-main: #292521;
+  --text-muted: #756c63;
+  --border-color: #eae5dd;
   
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 1px 3px rgba(55, 38, 24, 0.06);
+  --shadow-md: 0 4px 10px rgba(55, 38, 24, 0.08);
+  --shadow-lg: 0 12px 28px rgba(55, 38, 24, 0.08);
   
-  --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
 }
 
 /* ===================================================
@@ -56,14 +57,14 @@ a {
    📦 Layout Containers & Grid System
    =================================================== */
 .container {
-  max-width: 1200px;
+  max-width: 1240px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
 
 .books-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 1.5rem;
   margin: 2rem 0;
 }
@@ -78,7 +79,7 @@ a {
   gap: 0.5rem;
   padding: 0.65rem 1.25rem;
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 650;
   border-radius: var(--radius-md);
   border: 1px solid transparent;
   cursor: pointer;
@@ -102,7 +103,7 @@ a {
   background-color: var(--danger);
   color: white;
   &:hover:not(:disabled) {
-    background-color: #dc2626;
+    background-color: #b91c1c;
   }
 }
 
@@ -133,17 +134,18 @@ a {
 
   input, select, textarea {
     width: 100%;
-    padding: 0.65rem 0.85rem;
+    padding: 0.7rem 0.9rem;
     font-size: 0.95rem;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     background-color: white;
+    color: var(--text-main);
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
 
     &:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+      box-shadow: 0 0 0 3px rgba(166, 94, 59, 0.15);
     }
 
     &.is-invalid {
@@ -175,7 +177,7 @@ a {
   text-align: left;
 
   th {
-    background-color: #f1f5f9;
+    background-color: #f7f3ec;
     padding: 0.85rem 1rem;
     font-size: 0.85rem;
     font-weight: 700;
@@ -191,7 +193,7 @@ a {
   }
 
   tr:hover td {
-    background-color: #f8fafc;
+    background-color: #fbfaf7;
   }
 }
 
@@ -212,13 +214,14 @@ a {
   }
 
   &.badge-user {
-    background-color: #dbeafe;
-    color: #1e40af;
+    background-color: #e0f2fe;
+    color: #0369a1;
   }
 
   &.badge-category {
-    background-color: var(--primary-light);
-    color: var(--primary);
+    background-color: #fffdf2;
+    color: #70442d;
+    border: 1px solid #ebe5dd;
   }
 }
 
@@ -229,13 +232,13 @@ a {
   font-size: 0.9rem;
 
   &.alert-danger {
-    background-color: #fee2e2;
+    background-color: #fef2f2;
     color: #991b1b;
-    border: 1px solid #f87171;
+    border: 1px solid #fecaca;
   }
   &.alert-success {
-    background-color: #d1fae5;
-    color: #065f46;
-    border: 1px solid #34d399;
+    background-color: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
   }
 }

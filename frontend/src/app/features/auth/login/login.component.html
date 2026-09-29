@@ -1,13 +1,17 @@
-<div class="auth-container">
+<div class="auth-page">
   <div class="auth-card">
     <div class="auth-header">
-      <div class="logo-badge">📚 BOOK STORE</div>
-      <h2>Welcome Back</h2>
-      <p>Please enter your credentials to log in</p>
+      <a class="brand" routerLink="/home" aria-label="Book Store home">
+        <span class="brand-mark">B</span>
+        <span class="brand-name">BOOK<span class="brand-light">STORE</span></span>
+      </a>
+      <span class="eyebrow">WELCOME BACK</span>
+      <h2>Log in to your account</h2>
+      <p>Enter your email and password to access your bookshelf</p>
     </div>
 
     @if (errorMessage()) {
-      <div class="alert alert-danger">
+      <div class="alert alert-danger" role="alert">
         {{ errorMessage() }}
       </div>
     }
@@ -15,7 +19,7 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <!-- Email Field -->
       <div class="form-group">
-        <label for="email">Email Address</label>
+        <label for="email">Email address</label>
         <input
           id="email"
           type="email"
@@ -26,10 +30,10 @@
         @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
           <div class="error-text">
             @if (loginForm.get('email')?.hasError('required')) {
-              <span>Email is required</span>
+              <span>Email is required.</span>
             }
             @if (loginForm.get('email')?.hasError('email')) {
-              <span>Please enter a valid email address</span>
+              <span>Please enter a valid email address.</span>
             }
           </div>
         }
@@ -47,7 +51,7 @@
         />
         @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
           <div class="error-text">
-            <span>Password is required</span>
+            <span>Password is required.</span>
           </div>
         }
       </div>
@@ -55,7 +59,7 @@
       <!-- Submit Button -->
       <button type="submit" class="btn btn-primary btn-block" [disabled]="loading()">
         @if (loading()) {
-          <span>Authenticating...</span>
+          <span>Logging in...</span>
         } @else {
           <span>Log In</span>
         }
@@ -63,7 +67,7 @@
     </form>
 
     <div class="auth-footer">
-      <p>Don't have an account? <a routerLink="/signup">Create an account</a></p>
+      <p>Don't have an account yet? <a routerLink="/signup">Create an account</a></p>
     </div>
   </div>
 </div>

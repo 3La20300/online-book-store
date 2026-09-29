@@ -8,7 +8,6 @@ import com.bookstore.exception.BadRequestException;
 import com.bookstore.exception.DuplicateResourceException;
 import com.bookstore.exception.ResourceNotFoundException;
 import com.bookstore.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +16,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class AdminService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
+
+    public AdminService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            AuthService authService
+    ) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authService = authService;
+    }
 
     public List<UserSummaryResponse> getAllAdmins() {
         return userRepository.findAllByRole(Role.ADMIN)

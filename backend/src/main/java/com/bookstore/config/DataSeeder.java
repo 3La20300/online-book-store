@@ -42,14 +42,21 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void seedAdmin() {
-        if (!userRepository.existsByEmail(adminEmail)) {
-            userRepository.save(User.builder()
-                    .email(adminEmail)
-                    .password(passwordEncoder.encode(adminPassword))
-                    .phone(adminPhone)
-                    .role(Role.ADMIN)
-                    .build());
-        }
+        userRepository.findByEmail(adminEmail).ifPresentOrElse(
+                user -> {
+                    user.setPassword(passwordEncoder.encode(adminPassword));
+                    user.setRole(Role.ADMIN);
+                    userRepository.save(user);
+                },
+                () -> {
+                    userRepository.save(User.builder()
+                            .email(adminEmail)
+                            .password(passwordEncoder.encode(adminPassword))
+                            .phone(adminPhone)
+                            .role(Role.ADMIN)
+                            .build());
+                }
+        );
     }
 
     private void seedBooks() {

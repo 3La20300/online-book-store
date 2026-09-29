@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login.component';
 import { SignupComponent } from './features/auth/signup/signup.component';
 import { HomeComponent } from './features/customer/home/home.component';
+import { BookDetailsComponent } from './features/customer/book-details/book-details.component';
 import { AdminLayoutComponent } from './features/admin/admin-layout/admin-layout.component';
 import { ManageAdminsComponent } from './features/admin/manage-admins/manage-admins.component';
 import { ManageBooksComponent } from './features/admin/manage-books/manage-books.component';
@@ -22,10 +23,15 @@ export const routes: Routes = [
     canActivate: [noAuthGuard]
   },
 
-  // Customer Home Route (Protected by authGuard)
+  // Customer Routes (Protected by authGuard)
   {
     path: 'home',
     component: HomeComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'books/:id',
+    component: BookDetailsComponent,
     canActivate: [authGuard]
   },
 

@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +15,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
-@RequiredArgsConstructor
 @Tag(name = "Books", description = "Public book catalog and administrator inventory management")
 public class BookController {
 
     private final BookService bookService;
+
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
 
     @GetMapping
     @Operation(summary = "List all books")

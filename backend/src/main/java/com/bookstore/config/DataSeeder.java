@@ -5,7 +5,6 @@ import com.bookstore.entity.Role;
 import com.bookstore.entity.User;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +14,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class DataSeeder implements CommandLineRunner {
 
     private final UserRepository userRepository;
@@ -30,6 +28,12 @@ public class DataSeeder implements CommandLineRunner {
 
     @Value("${app.seed.admin.phone:0000000000}")
     private String adminPhone;
+
+    public DataSeeder(UserRepository userRepository, BookRepository bookRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.bookRepository = bookRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public void run(String... args) {

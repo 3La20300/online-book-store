@@ -5,18 +5,20 @@ import com.bookstore.dto.response.BookResponse;
 import com.bookstore.entity.Book;
 import com.bookstore.exception.ResourceNotFoundException;
 import com.bookstore.repository.BookRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class BookService {
 
     private final BookRepository bookRepository;
+
+    public BookService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
 
     public List<BookResponse> getAllBooks() {
         return bookRepository.findAll().stream().map(BookResponse::from).toList();

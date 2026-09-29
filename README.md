@@ -1,22 +1,46 @@
 # Online Book Store Management System
 
-Full Stack Graduation Project Specification and Implementation Guide.
+Full Stack Web Application Specification and Implementation Guide.
 
 ---
 
-## 1. Project Overview
+## 1. Project Description
 
-The Online Book Store Management System is a full-stack web application developed with Spring Boot, Angular, and PostgreSQL. The system implements secure Role-Based Access Control (RBAC) supporting two distinct roles:
-- **USER (Customer):** Can browse the public book catalog, view detailed book information, and manage their profile.
-- **ADMIN (Administrator):** Has exclusive access to administrative operations, including full CRUD management of book inventory and administrator user account management.
+The Online Book Store Management System is an enterprise-grade full-stack web application designed for online book catalog browsing and administration. The application is built with a decoupled architecture utilizing a Spring Boot RESTful backend, an Angular Single Page Application (SPA) frontend, and a containerized PostgreSQL relational database.
+
+The application enforces secure Role-Based Access Control (RBAC) across two distinct user roles:
+- **USER (Customer):** Can register an account, browse the book catalog, view detailed book specifications, and retrieve their profile information.
+- **ADMIN (Administrator):** Has exclusive access to the administration dashboard, allowing complete CRUD (Create, Read, Update, Delete) operations over book inventory and management of administrator accounts.
 
 ---
 
-## 2. Technology Stack
+## 2. Key Features
+
+### Authentication & Authorization
+- Customer self-registration with automatic default `USER` role assignment.
+- Secure credential authentication utilizing BCrypt password hashing and JSON Web Tokens (JWT).
+- Stateless request authorization through custom Spring Security filter chains.
+- Role-based route protection on both frontend (Angular Route Guards) and backend (`@PreAuthorize`).
+- Protected administrative APIs preventing privilege escalation.
+
+### Customer Storefront
+- Dynamic landing page with store branding and book catalog showcase.
+- Responsive book grid displaying cover images, titles, categories, and formatted pricing.
+- Detailed book view presenting complete descriptions, authors, and metadata.
+
+### Administrative Management
+- Dedicated admin portal accessible only to authenticated administrators.
+- Comprehensive book inventory management (Add, Edit, View, and Delete books).
+- Administrator user management (View all administrators, register new administrators, and delete admin accounts).
+
+---
+
+## 3. Technology Stack
 
 ### Backend
-- **Framework:** Java 21, Spring Boot 3.3.4
-- **Security:** Spring Security, JSON Web Token (JJWT 0.12.6), BCrypt Password Hashing
+- **Language & Runtime:** Java 21
+- **Framework:** Spring Boot 3.3.4
+- **Security:** Spring Security, JSON Web Token (JJWT 0.12.6), BCrypt
 - **Data Persistence:** Spring Data JPA, Hibernate, PostgreSQL Driver
 - **Validation:** Jakarta Bean Validation
 - **Documentation:** SpringDoc OpenAPI 3.1 / Swagger UI
@@ -25,7 +49,7 @@ The Online Book Store Management System is a full-stack web application develope
 ### Frontend
 - **Framework:** Angular 19 (Standalone Components, Reactive Forms)
 - **State Management:** Angular Signals and RxJS
-- **Routing & Security:** Angular Functional Route Guards (`authGuard`, `adminGuard`, `noAuthGuard`)
+- **Routing & Guards:** Functional CanActivate Guards (`authGuard`, `adminGuard`, `noAuthGuard`)
 - **HTTP Client:** Angular `HttpClient` with Functional Interceptors (`authInterceptor`)
 - **Styling:** Modular SCSS design system with CSS custom properties
 
@@ -35,65 +59,38 @@ The Online Book Store Management System is a full-stack web application develope
 
 ---
 
-## 3. Team Responsibilities & Module Breakdown
-
-This project is divided between two team members following a vertical domain feature architecture:
-
-### Person 1: Security, Identity & Admin Management (Completed)
-- **Backend:**
-  - User JPA Entity and Role Enum (`USER`, `ADMIN`).
-  - Spring Security configuration with stateless session management.
-  - JWT generation, validation, and request filtering (`JwtService`, `JwtAuthenticationFilter`).
-  - Authentication Controller & Service (`POST /api/auth/register`, `POST /api/auth/login`).
-  - Current User Profile Controller (`GET /api/users/me`).
-  - Administrator Management Controller & Service (`GET`, `POST`, `DELETE /api/admins`).
-  - Centralized Exception Handling (`@RestControllerAdvice`) mapping standard HTTP status codes.
-- **Frontend:**
-  - Core TypeScript models (`User`, `AuthResponse`, `LoginRequest`, `RegisterRequest`).
-  - Reactive `AuthService` and `AdminService`.
-  - HTTP `authInterceptor` for automatic Bearer token injection.
-  - Route Guards: `authGuard`, `adminGuard`, and `noAuthGuard`.
-  - Authentication views: `LoginComponent` (with role-based routing) and `SignupComponent`.
-  - Administration views: `AdminLayoutComponent` (sidebar layout) and `ManageAdminsComponent`.
-
-### Person 2: Book Catalog, Storefront & Inventory CRUD (In Progress)
-- **Backend:**
-  - Book JPA Entity and Book Repository.
-  - Book Service and Controller (`GET`, `POST`, `PUT`, `DELETE /api/books`).
-  - Database Seeder (`CommandLineRunner`) for initial default admin and sample book records.
-- **Frontend:**
-  - Storefront UI: `NavbarComponent`, `BookCardComponent`, `HomeComponent` (Catalog & Hero).
-  - Details view: `BookDetailsComponent` (`/books/:id`).
-  - Book inventory management: `ManageBooksComponent` (`/admin/books` with Add/Edit/Delete modals).
-
----
-
 ## 4. System Architecture
 
 ```
-[ Angular SPA (Port 4200) ]
-        |
-        | HTTP Requests + [Authorization: Bearer <JWT>]
-        v
-[ Spring Boot REST API (Port 8082) ]
-        |
-        +---> [ JwtAuthenticationFilter ] ---> [ SecurityContext ]
+[ Angular Single Page Application (Port 4200) ]
+                      |
+                      | HTTP Requests + [Authorization: Bearer <JWT>]
+                      v
+       [ Spring Boot REST API (Port 8082) ]
+                      |
+        +-------------+-------------+
+        |                           |
+        v                           v
+[ JwtAuthenticationFilter ]  [ GlobalExceptionHandler ]
+        |                           |
+        v                           v
+[ SecurityContext / RBAC ]   [ Standard JSON Errors ]
         |
         +---> [ REST Controllers (Auth, User, Admin, Book) ]
         |
-        +---> [ Service Layer ]
+        +---> [ Business Service Layer ]
         |
-        +---> [ JPA Repositories ]
+        +---> [ Spring Data JPA Repositories ]
         |
         v
-[ PostgreSQL Database (Port 5432) ]
+[ PostgreSQL Relational Database (Port 5432) ]
 ```
 
 ---
 
 ## 5. Prerequisites
 
-Ensure you have the following installed on your local environment:
+Ensure the following tools are installed on your environment:
 - **Java Development Kit (JDK):** Version 17 or 21
 - **Node.js:** Version 18.x or 20.x
 - **Angular CLI:** `npm install -g @angular/cli`
@@ -110,32 +107,32 @@ cd online-book-store
 ```
 
 ### Step 2: Start PostgreSQL Database via Docker
-Start the PostgreSQL container:
+Start the containerized PostgreSQL service:
 ```bash
 docker compose up -d
 ```
-Verify that the database container is healthy and listening on port `5432` (or your mapped port).
+Verify that the container is running and healthy on port `5432`.
 
-### Step 3: Start the Backend Service
-Navigate to the `backend` directory and run:
+### Step 3: Launch the Backend Service
+Navigate to the `backend` directory and start the Spring Boot application:
 ```bash
 cd backend
 ./mvnw clean spring-boot:run
 ```
-*(On Windows PowerShell, use `.\mvnw.cmd clean spring-boot:run`)*
+*(On Windows PowerShell, execute: `.\mvnw.cmd clean spring-boot:run`)*
 
-The backend server will start on `http://localhost:8082`.
+The backend server starts on `http://localhost:8082`.
 - Swagger UI Documentation: `http://localhost:8082/swagger-ui.html`
 - OpenAPI Specification: `http://localhost:8082/v3/api-docs`
 
-### Step 4: Start the Frontend Application
+### Step 4: Launch the Frontend Application
 In a separate terminal, navigate to the `frontend` directory:
 ```bash
 cd frontend
 npm install
 npm start
 ```
-The Angular development server will run at `http://localhost:4200`.
+The Angular development server will start on `http://localhost:4200`.
 
 ---
 
@@ -145,30 +142,30 @@ The Angular development server will run at `http://localhost:4200`.
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
 | `POST` | `/api/auth/register` | Public | Registers a new user with default role `USER`. |
-| `POST` | `/api/auth/login` | Public | Authenticates credentials and returns a JWT token. |
-| `GET` | `/api/users/me` | Authenticated | Retrieves current authenticated user profile. |
+| `POST` | `/api/auth/login` | Public | Authenticates credentials and returns a signed JWT token. |
+| `GET` | `/api/users/me` | Authenticated | Retrieves the authenticated user profile from SecurityContext. |
 
 ### Administrator Management (`/api/admins`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/api/admins` | ADMIN | Retrieves list of all administrator accounts. |
-| `POST` | `/api/admins` | ADMIN | Registers a new administrator account (`role = ADMIN`). |
+| `GET` | `/api/admins` | ADMIN | Retrieves a list of all administrator accounts. |
+| `POST` | `/api/admins` | ADMIN | Creates a new administrator account (`role = ADMIN`). |
 | `DELETE` | `/api/admins/{id}` | ADMIN | Removes an administrator account by ID. |
 
-### Book Catalog & Management (`/api/books`)
+### Book Catalog & Inventory (`/api/books`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/api/books` | Public / USER / ADMIN | Retrieves list of all books. |
-| `GET` | `/api/books/{id}` | Public / USER / ADMIN | Retrieves detailed information for a single book. |
-| `POST` | `/api/books` | ADMIN | Adds a new book to the inventory. |
+| `GET` | `/api/books/{id}` | Public / USER / ADMIN | Retrieves full details for a single book. |
+| `POST` | `/api/books` | ADMIN | Adds a new book to inventory. |
 | `PUT` | `/api/books/{id}` | ADMIN | Updates an existing book record. |
-| `DELETE` | `/api/books/{id}` | ADMIN | Permanently deletes a book from inventory. |
+| `DELETE` | `/api/books/{id}` | ADMIN | Deletes a book record from the inventory. |
 
 ---
 
-## 8. Error Handling & HTTP Status Codes
+## 8. Exception Handling & Error Responses
 
-The backend implements centralized exception handling via `@RestControllerAdvice` returning standard JSON payloads:
+The backend utilizes centralized exception handling with `@RestControllerAdvice` to ensure all error payloads maintain a consistent structure:
 
 ```json
 {
@@ -184,20 +181,20 @@ The backend implements centralized exception handling via `@RestControllerAdvice
 }
 ```
 
-### Standard Status Codes:
-- **200 OK:** Request succeeded.
-- **201 Created:** Resource successfully created.
-- **204 No Content:** Resource successfully deleted.
-- **400 Bad Request:** Form validation failure or password mismatch.
-- **401 Unauthorized:** Invalid or missing authentication credentials.
-- **403 Forbidden:** Authenticated user lacks permission for the requested resource.
-- **404 Not Found:** Requested entity does not exist.
-- **409 Conflict:** Resource already exists (e.g. duplicate email registration).
-- **500 Internal Server Error:** Unexpected server-side exception.
+### Standard HTTP Status Codes:
+- **200 OK:** Request completed successfully.
+- **201 Created:** New resource created successfully.
+- **204 No Content:** Resource deleted successfully.
+- **400 Bad Request:** Request validation failure or mismatched inputs.
+- **401 Unauthorized:** Invalid or missing authentication token.
+- **403 Forbidden:** Authenticated user lacks required administrative permissions.
+- **404 Not Found:** Requested resource does not exist.
+- **409 Conflict:** Resource constraint violation (e.g. duplicate email registration).
+- **500 Internal Server Error:** Unhandled server exception.
 
 ---
 
-## 9. Project Directory Layout
+## 9. Project Directory Structure
 
 ```
 online-book-store/

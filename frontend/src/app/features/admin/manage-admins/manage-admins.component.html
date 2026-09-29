@@ -1,0 +1,170 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Manage Administrators</h1>
+      <p class="page-subtitle">View, create, and manage administrative accounts with access to system operations</p>
+    </div>
+    <button type="button" (click)="openAddModal()" class="btn btn-primary">
+      <span>+</span> Add New Admin
+    </button>
+  </div>
+
+  <!-- Status Alerts -->
+  @if (errorMessage()) {
+    <div class="alert alert-danger">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (successMessage()) {
+    <div class="alert alert-success">
+      {{ successMessage() }}
+    </div>
+  }
+
+  <!-- Data Table -->
+  <div class="table-container">
+    @if (loading()) {
+      <div class="table-state">Loading administrators...</div>
+    } @else if (admins().length === 0) {
+      <div class="table-state">No administrator accounts found.</div>
+    } @else {
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th style="width: 80px;">ID</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Role</th>
+            <th style="text-align: right; width: 140px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (admin of admins(); track admin.id) {
+            <tr>
+              <td><span class="id-badge">#{{ admin.id }}</span></td>
+              <td>
+                <div class="email-cell">
+                  <span class="avatar">👤</span>
+                  <span class="email-text">{{ admin.email }}</span>
+                </div>
+              </td>
+              <td>{{ admin.phone }}</td>
+              <td>
+                <span class="badge badge-admin">{{ admin.role }}</span>
+              </td>
+              <td style="text-align: right;">
+                <button
+                  type="button"
+                  (click)="deleteAdmin(admin)"
+                  class="btn btn-danger btn-sm"
+                  title="Delete Administrator"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
+
+<!-- Add Admin Modal Dialog -->
+@if (isAddModalOpen()) {
+  <div class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>+ Add New Administrator</h3>
+        <button type="button" (click)="closeAddModal()" class="close-btn">&times;</button>
+      </div>
+
+      <form [formGroup]="adminForm" (ngSubmit)="onAddAdminSubmit()">
+        <div class="modal-body">
+          <!-- Email Field -->
+          <div class="form-group">
+            <label for="adminEmail">Email Address</label>
+            <input
+              id="adminEmail"
+              type="email"
+              formControlName="email"
+              placeholder="admin@example.com"
+              [class.is-invalid]="adminForm.get('email')?.invalid && adminForm.get('email')?.touched"
+            />
+            @if (adminForm.get('email')?.invalid && adminForm.get('email')?.touched) {
+              <div class="error-text">
+                <span>Please provide a valid email</span>
+              </div>
+            }
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <label for="adminPassword">Password</label>
+            <input
+              id="adminPassword"
+              type="password"
+              formControlName="password"
+              placeholder="Min. 6 characters"
+              [class.is-invalid]="adminForm.get('password')?.invalid && adminForm.get('password')?.touched"
+            />
+            @if (adminForm.get('password')?.invalid && adminForm.get('password')?.touched) {
+              <div class="error-text">
+                <span>Password must be at least 6 characters</span>
+              </div>
+            }
+          </div>
+
+          <!-- Confirm Password Field -->
+          <div class="form-group">
+            <label for="adminConfirmPassword">Confirm Password</label>
+            <input
+              id="adminConfirmPassword"
+              type="password"
+              formControlName="confirmPassword"
+              placeholder="Confirm password"
+              [class.is-invalid]="adminForm.get('confirmPassword')?.invalid && adminForm.get('confirmPassword')?.touched"
+            />
+            @if (adminForm.get('confirmPassword')?.invalid && adminForm.get('confirmPassword')?.touched) {
+              <div class="error-text">
+                <span>Passwords do not match</span>
+              </div>
+            }
+          </div>
+
+          <!-- Phone Number Field -->
+          <div class="form-group">
+            <label for="adminPhone">Phone Number</label>
+            <input
+              id="adminPhone"
+              type="tel"
+              formControlName="phone"
+              placeholder="+1234567890"
+              [class.is-invalid]="adminForm.get('phone')?.invalid && adminForm.get('phone')?.touched"
+            />
+            @if (adminForm.get('phone')?.invalid && adminForm.get('phone')?.touched) {
+              <div class="error-text">
+                <span>Please provide a valid phone number</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" (click)="closeAddModal()" class="btn btn-outline" [disabled]="submitting()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+            @if (submitting()) {
+              <span>Saving...</span>
+            } @else {
+              <span>Create Admin</span>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

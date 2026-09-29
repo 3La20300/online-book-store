@@ -33,7 +33,7 @@ app:
   # CORS Configuration for Angular frontend
   cors:
     allowed-origins:
-      "http://localhost:4200"
+      - "http://localhost:4200"
 
 # Swagger / OpenAPI Configuration
 springdoc:

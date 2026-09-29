@@ -1,0 +1,38 @@
+<div class="admin-wrapper">
+  <!-- Sidebar Navigation -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="logo">📚 BookStore Admin</div>
+      @if (authService.currentUser()) {
+        <div class="admin-badge">
+          <span class="dot"></span>
+          <span>{{ authService.currentUser()?.email }}</span>
+        </div>
+      }
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/admin/books" routerLinkActive="active" class="nav-item">
+        <span class="icon">📖</span>
+        <span class="label">Manage Books</span>
+      </a>
+
+      <a routerLink="/admin/admins" routerLinkActive="active" class="nav-item">
+        <span class="icon">👥</span>
+        <span class="label">Manage Admins</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button type="button" (click)="onLogout()" class="logout-btn">
+        <span class="icon">🚪</span>
+        <span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Admin Content Area -->
+  <main class="admin-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
